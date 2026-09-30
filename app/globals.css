@@ -1,26 +1,134 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: #09090b;
+  --color-surface-lowest: #0c0c0f;
+  --color-surface: #18181b;
+  --color-surface-raised: #27272a;
+  --color-outline: #27272a;
+  --color-primary: #a78bfa;
+  --color-primary-hover: #c4b5fd;
+  --color-on-primary: #09090b;
+  --color-success: #34d399;
+  --color-error: #ef4444;
+  --color-content: #fafafa;
+  --color-muted: #a1a1aa;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-content);
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+}
+
+.font-display {
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+}
+
+button, a {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+
+:is(button, a, input, textarea):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+input, textarea {
+  background: var(--color-surface);
+  border-color: var(--color-outline);
+  color: var(--color-content);
+}
+
+input::placeholder, textarea::placeholder { color: var(--color-muted); }
+
+.book-card {
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.book-card:hover { background: var(--color-surface-raised); }
+
+.book-cover {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid var(--color-outline);
+  border-radius: 8px;
+  background: var(--color-surface-lowest);
+  color: var(--color-content);
+  padding: 1.25rem;
+}
+
+.book-cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .32;
+  background-image: radial-gradient(var(--color-outline) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+.book-cover > * { position: relative; z-index: 1; }
+
+dialog {
+  border: 1px solid var(--color-outline);
+  padding: 0;
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--color-content);
+}
+
+dialog::backdrop { background: rgb(0 0 0 / 80%); }
+
+.modal-dialog {
+  width: calc(100% - 2rem);
+  max-width: 28rem;
+  margin: auto;
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+
+.drawer-dialog {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  width: min(100%, 32rem);
+  height: 100dvh;
+  max-height: 100dvh;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--color-surface);
+}
+
+.toast { transition: opacity 160ms ease, transform 160ms ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
 }
