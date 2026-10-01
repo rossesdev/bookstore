@@ -1,8 +1,9 @@
 import { useRef, useState, type FormEvent } from "react";
-import type { User } from "../types/store";
+import type { Customer } from "../types/store";
+import { createCustomer } from "../actions";
 
 export function useRegistrationForm(
-  setUser: (user: User) => void,
+  setCustomer: (user: Customer) => void,
   toast: (message: string) => void,
 ) {
   const [register, setRegister] = useState({
@@ -22,7 +23,7 @@ export function useRegistrationForm(
   const validRegister =
     !!register.firstname.trim() && !!register.lastname.trim() && validEmail;
 
-  function submitRegistration(event: FormEvent<HTMLFormElement>) {
+  async function submitRegistration(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!validRegister) {
       setTouched({ firstname: true, lastname: true, email: true });
@@ -36,7 +37,10 @@ export function useRegistrationForm(
       lastname: register.lastname.trim(),
       email: register.email.trim(),
     };
-    setUser(next);
+
+    const customer = await createCustomer(next);
+
+    setCustomer(customer);
     toast(`¡Bienvenido a Aura Books, ${next.firstname}!`);
   }
 

@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 
-export function useCancellationForm(onCancel: (id: string) => void) {
-  const [cancelId, setCancelId] = useState<string | null>(null);
+export function useCancellationForm(onCancel: (id: number) => void) {
+  const [cancelId, setCancelId] = useState<number | null>(null);
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState(false);
   const reasonRef = useRef<HTMLTextAreaElement>(null);
 
-  function openCancel(id: string) {
+  function openCancel(id: number) {
     setCancelId(id);
     setReason("");
     setReasonError(false);

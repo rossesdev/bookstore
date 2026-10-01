@@ -1,8 +1,10 @@
 import type { Dispatch, SetStateAction } from "react";
 import { bookById } from "../books";
-import type { CartItem, Order } from "../types/store";
+import type { CartItem, Customer, Order } from "../types/store";
+import { createOrder } from "../actions";
 
 export function useOrders(
+  customer: Customer | null,
   cart: CartItem[],
   cartTotal: number,
   setCart: Dispatch<SetStateAction<CartItem[]>>,
@@ -10,27 +12,41 @@ export function useOrders(
   toast: (message: string) => void,
   onPurchase: () => void,
 ) {
-  function purchase() {
+  async function purchase() {
     if (!cart.length) return;
+    if (cartTotal <= 0) return;
+
+    const customerID = customer?.customer_id;
+
     const items = cart.flatMap((item) => {
       const book = bookById.get(item.bookId);
       return book ? [{ ...item, title: book.title, price: book.price }] : [];
     });
-    setOrders((current) => [
-      {
-        id: `ORD-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
-        date: new Date().toISOString(),
-        items,
-        total: cartTotal,
-      },
-      ...current,
-    ]);
+
+    if (!customerID) return;
+
+    const order = {
+      customer_id: customerID,
+      total: cartTotal,
+      items,
+    };
+
+    const { order: persistedOrder } = await createOrder(order);
+    const completedOrder: Order = {
+      ...order,
+      order_id: persistedOrder.order_id,
+      status: persistedOrder.status,
+      created_at: persistedOrder.created_at.toISOString(),
+      updated_at: persistedOrder.updated_at.toISOString(),
+    };
+
     setCart([]);
+    setOrders((current) => [completedOrder, ...current]);
     onPurchase();
   }
 
-  function cancelOrder(id: string) {
-    setOrders((current) => current.filter((order) => order.id !== id));
+  function cancelOrder(id: number) {
+    setOrders((current) => current.filter((order) => order.order_id !== id));
     toast("Pedido cancelado y eliminado de tu lista.");
   }
 

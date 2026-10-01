@@ -26,15 +26,27 @@ export default function Home() {
   const [clearOpen, setClearOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const { view, syncView, navigate: navigateTo } = useStoreNavigation();
-  const { ready, user, setUser, cart, setCart, orders, setOrders } =
+  const { ready, customer, setCustomer, cart, setCart, orders, setOrders } =
     useStoredStore(syncView);
   const { notice, toast } = useNotice();
-  const { cartCount, cartTotal, addToCart, updateQuantity, removeFromCart, clearCart } =
-    useCart(cart, setCart, toast);
+  const {
+    cartCount,
+    cartTotal,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+  } = useCart(cart, setCart, toast);
   const { purchase, cancelOrder } = useOrders(
-    cart, cartTotal, setCart, setOrders, toast, () => setSuccessOpen(true),
+    customer,
+    cart,
+    cartTotal,
+    setCart,
+    setOrders,
+    toast,
+    () => setSuccessOpen(true),
   );
-  const registration = useRegistrationForm(setUser, toast);
+  const registration = useRegistrationForm(setCustomer, toast);
   const cancellation = useCancellationForm(cancelOrder);
 
   function navigate(next: View) {
@@ -45,14 +57,14 @@ export default function Home() {
     <div className="min-h-screen flex flex-col antialiased selection:bg-primary/20 selection:text-primary">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-surface focus:p-3 focus:rounded-lg"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-100 focus:bg-surface focus:p-3 focus:rounded-lg"
       >
         Saltar al contenido principal
       </a>
       <StoreHeader
         view={view}
         navigate={navigate}
-        user={user}
+        user={customer}
         ordersCount={orders.length}
         cartCount={cartCount}
         onOpenCart={() => setCartOpen(true)}
@@ -82,7 +94,7 @@ export default function Home() {
       </main>
       <StoreFooter />
       <CartDrawer
-        open={cartOpen && !!user}
+        open={cartOpen && !!customer}
         cart={cart}
         cartCount={cartCount}
         cartTotal={cartTotal}
@@ -92,7 +104,7 @@ export default function Home() {
         removeFromCart={removeFromCart}
         updateQuantity={updateQuantity}
       />
-      <RegistrationDialog open={ready && !user} form={registration} />
+      <RegistrationDialog open={ready && !customer} form={registration} />
       <ClearCartDialog
         open={clearOpen}
         onCancel={() => {

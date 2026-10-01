@@ -3,7 +3,7 @@ import Icon from "./Icon";
 import Modal from "./Modal";
 
 type CancellationFormProps = {
-  cancelId: string | null;
+  cancelId: number | null;
   reason: string;
   setReason: Dispatch<SetStateAction<string>>;
   reasonError: boolean;

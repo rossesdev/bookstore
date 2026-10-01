@@ -2,28 +2,27 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { bookById } from "../books";
 import { keys, maxQuantity } from "../constants/store";
 import { readStorage, writeStorage } from "../lib/storage";
-import type { CartItem, Order, User } from "../types/store";
+import type { CartItem, Order, Customer } from "../types/store";
 
 export function useStoredStore(syncView: () => void): {
   ready: boolean;
-  user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>;
+  customer: Customer | null;
+  setCustomer: Dispatch<SetStateAction<Customer | null>>;
   cart: CartItem[];
   setCart: Dispatch<SetStateAction<CartItem[]>>;
   orders: Order[];
   setOrders: Dispatch<SetStateAction<Order[]>>;
 } {
   const [ready, setReady] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      const savedUser = readStorage<User | null>(keys.user, null);
+      const savedUser = readStorage<Customer | null>(keys.user, null);
       const savedCart = readStorage<CartItem[]>(keys.cart, []);
-      const savedOrders = readStorage<Order[]>(keys.orders, []);
-      setUser(
+      setCustomer(
         savedUser && typeof savedUser.firstname === "string" ? savedUser : null,
       );
       setCart(
@@ -37,7 +36,6 @@ export function useStoredStore(syncView: () => void): {
             )
           : [],
       );
-      setOrders(Array.isArray(savedOrders) ? savedOrders : []);
       syncView();
       setReady(true);
     }, 0);
@@ -45,14 +43,19 @@ export function useStoredStore(syncView: () => void): {
   }, [syncView]);
 
   useEffect(() => {
-    if (ready) writeStorage(keys.user, user);
-  }, [ready, user]);
+    if (ready) writeStorage(keys.user, customer);
+  }, [ready, customer]);
   useEffect(() => {
     if (ready) writeStorage(keys.cart, cart);
   }, [ready, cart]);
-  useEffect(() => {
-    if (ready) writeStorage(keys.orders, orders);
-  }, [ready, orders]);
 
-  return { ready, user, setUser, cart, setCart, orders, setOrders };
+  return {
+    ready,
+    customer,
+    setCustomer,
+    cart,
+    setCart,
+    orders,
+    setOrders,
+  };
 }

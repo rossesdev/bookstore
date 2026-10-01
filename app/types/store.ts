@@ -1,7 +1,11 @@
-export type User = {
+export type CustomerInput = {
   firstname: string;
   lastname: string;
   email: string;
+};
+
+export type Customer = CustomerInput & {
+  customer_id: number;
 };
 
 export type CartItem = {
@@ -14,11 +18,19 @@ export type OrderItem = CartItem & {
   price: number;
 };
 
-export type Order = {
-  id: string;
-  date: string;
-  items: OrderItem[];
+export type OrderStatus = "pending" | "paid" | "cancelled";
+
+export type CreateOrderInput = {
+  customer_id: number;
   total: number;
+  items: OrderItem[];
+};
+
+export type Order = CreateOrderInput & {
+  order_id: number;
+  status: OrderStatus;
+  created_at: string;
+  updated_at: string;
 };
 
 export type View = "shop" | "checkout" | "orders";

@@ -4,12 +4,12 @@ import type {
   RefObject,
   SetStateAction,
 } from "react";
-import type { User } from "../types/store";
+import type { CustomerInput } from "../types/store";
 import Icon from "./Icon";
 import Modal from "./Modal";
 
-type RegistrationFields = User;
-type TouchedFields = Record<keyof User, boolean>;
+type RegistrationFields = CustomerInput;
+type TouchedFields = Record<keyof CustomerInput, boolean>;
 
 type RegistrationFormProps = {
   register: RegistrationFields;
@@ -51,8 +51,8 @@ export default function RegistrationDialog({
           Bienvenido a Bookstore
         </h2>
         <p className="text-muted text-xs sm:text-sm mt-1.5">
-          Crea tu perfil de lector para comenzar a explorar nuestro catálogo
-          de libros.
+          Crea tu perfil de lector para comenzar a explorar nuestro catálogo de
+          libros.
         </p>
       </div>
       <form

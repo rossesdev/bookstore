@@ -14,7 +14,7 @@ export default function OrdersView({
   orders: Order[];
   view: View;
   navigate: (view: View) => void;
-  onCancelOrder: (id: string) => void;
+  onCancelOrder: (id: number) => void;
 }) {
   return (
     <section className="space-y-8 max-w-5xl mx-auto">
@@ -46,8 +46,8 @@ export default function OrdersView({
             No tienes libros ni compras registradas
           </h2>
           <p className="text-sm text-muted max-w-sm mx-auto">
-            Cuando realices un pedido desde el carrito, aparecerá aquí con
-            todo su detalle y opciones de gestión.
+            Cuando realices un pedido desde el carrito, aparecerá aquí con todo
+            su detalle y opciones de gestión.
           </p>
           <NavLink
             view="shop"
@@ -62,20 +62,20 @@ export default function OrdersView({
         <div className="space-y-6">
           {orders.map((order) => (
             <article
-              key={order.id}
+              key={order.order_id}
               className="bg-surface rounded-lg p-6 sm:p-7 border border-outline  space-y-5"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-outline pb-4">
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-surface-raised text-content">
-                      Pedido #{order.id}
+                      Pedido #{order.order_id}
                     </span>
                     <time
                       className="text-xs text-muted font-medium"
-                      dateTime={order.date}
+                      dateTime={order.created_at}
                     >
-                      {dateLabel(order.date)}
+                      {dateLabel(order.created_at)}
                     </time>
                   </div>
                   <p className="text-xs text-muted">
@@ -99,7 +99,7 @@ export default function OrdersView({
                     </span>
                   </div>
                   <button
-                    onClick={() => onCancelOrder(order.id)}
+                    onClick={() => onCancelOrder(order.order_id)}
                     className="px-3.5 py-2 rounded-lg text-content bg-transparent border border-outline hover:bg-surface-raised font-semibold text-xs flex items-center gap-1.5"
                   >
                     <Icon name="x" className="w-3.5 h-3.5" />
@@ -115,13 +115,10 @@ export default function OrdersView({
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       {bookById.get(item.bookId) && (
-                        <BookCover
-                          book={bookById.get(item.bookId)!}
-                          mini
-                        />
+                        <BookCover book={bookById.get(item.bookId)!} mini />
                       )}
                       <div className="min-w-0">
-                        <h2 className="font-display font-semibold text-content text-xs sm:text-sm break-words">
+                        <h2 className="font-display font-semibold text-content text-xs sm:text-sm wrap-break-word">
                           {item.title}
                         </h2>
                         <span className="text-xs text-muted">
