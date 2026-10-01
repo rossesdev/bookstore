@@ -1,0 +1,143 @@
+import { bookById, money } from "../books";
+import type { CartItem, View } from "../types/store";
+import BookCover from "./BookCover";
+import Icon from "./Icon";
+import NavLink from "./NavLink";
+
+export default function CheckoutView({
+  cart,
+  cartTotal,
+  view,
+  navigate,
+  purchase,
+}: {
+  cart: CartItem[];
+  cartTotal: number;
+  view: View;
+  navigate: (view: View) => void;
+  purchase: () => void;
+}) {
+  return cart.length ? (
+    <section className="space-y-8 max-w-4xl mx-auto">
+        <div className="flex items-center justify-between gap-3 border-b border-outline pb-5">
+          <NavLink
+            view="shop"
+            current={view}
+            navigate={navigate}
+            className="inline-flex items-center gap-2 text-muted hover:text-primary font-semibold text-sm py-2 px-3 rounded-lg hover:bg-surface-raised"
+          >
+            <Icon name="left" className="w-4 h-4" />
+            Volver al catálogo
+          </NavLink>
+          <span className="text-xs font-semibold px-3 py-1 bg-surface text-primary border border-outline rounded-full">
+            Paso 2 de 2: Confirmación de Pedido
+          </span>
+        </div>
+        <div className="bg-surface rounded-lg p-6 sm:p-10  border border-outline space-y-8">
+          <div>
+            <h1 className="font-display text-3xl font-bold text-content">
+              Resumen de tu Compra
+            </h1>
+            <p className="text-muted text-sm mt-1">
+              Revisa el detalle de los libros y confirma tu orden para
+              procesar el pedido.
+            </p>
+          </div>
+          <div className="divide-y divide-outline border-y border-outline">
+            {cart.map((item) => {
+              const book = bookById.get(item.bookId)!;
+              return (
+                <div
+                  key={item.bookId}
+                  className="py-4 flex items-center justify-between gap-4"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <BookCover book={book} mini />
+                    <div className="min-w-0">
+                      <h2 className="font-display font-bold text-content text-sm sm:text-base break-words">
+                        {book.title}
+                      </h2>
+                      <p className="text-xs text-muted">{book.author}</p>
+                      <p className="text-xs text-muted mt-1">
+                        Precio unitario:{" "}
+                        <strong>{money.format(book.price)}</strong>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-xs font-bold text-muted block">
+                      Cantidad: {item.quantity}
+                    </span>
+                    <span className="font-display font-extrabold text-content text-base sm:text-lg tabular-nums">
+                      {money.format(book.price * item.quantity)}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="bg-surface-lowest rounded-lg p-6 border border-outline space-y-3">
+            <div className="flex justify-between text-sm text-muted">
+              <span>Subtotal de libros</span>
+              <span className="font-medium text-content tabular-nums">
+                {money.format(cartTotal)}
+              </span>
+            </div>
+            <div className="flex justify-between text-sm text-muted">
+              <span>
+                Envío estándar a domicilio{" "}
+                <strong className="text-[11px] text-success bg-success/10 px-1.5 py-0.5 rounded">
+                  GRATIS
+                </strong>
+              </span>
+              <span className="font-medium text-success">
+                {money.format(0)}
+              </span>
+            </div>
+            <div className="border-t border-outline pt-3 flex justify-between items-baseline">
+              <span className="font-display text-lg font-bold text-content">
+                Total a pagar:
+              </span>
+              <span className="text-2xl sm:text-3xl font-extrabold text-primary tabular-nums">
+                {money.format(cartTotal)}
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-4 pt-2">
+            <NavLink
+              view="shop"
+              current={view}
+              navigate={navigate}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-lg border border-outline text-content hover:bg-surface-raised font-semibold text-sm text-center"
+            >
+              Seguir explorando
+            </NavLink>
+            <button
+              onClick={purchase}
+              className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-primary hover:bg-primary-hover text-on-primary font-bold text-base  flex items-center justify-center gap-2"
+            >
+              <Icon name="check" />
+              Confirmar y Comprar
+            </button>
+          </div>
+        </div>
+      </section>
+    ) : (
+      <section className="max-w-2xl mx-auto bg-surface rounded-lg p-10 text-center border border-outline">
+        <h1 className="font-display text-2xl font-bold">
+          Tu carrito está vacío
+        </h1>
+        <p className="mt-2 text-sm text-muted">
+          Agrega libros para continuar con la compra.
+        </p>
+        <NavLink
+          view="shop"
+          current={view}
+          navigate={navigate}
+          className="inline-block mt-5 px-5 py-3 rounded-lg bg-primary hover:bg-primary-hover text-on-primary font-bold text-sm"
+        >
+          Ir al Catálogo
+        </NavLink>
+      </section>
+  );
+}
