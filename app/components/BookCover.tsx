@@ -1,6 +1,12 @@
-import type { Book } from "../books";
+import type { Book } from "../types/store";
 
-export default function BookCover({ book, mini = false }: { book: Book; mini?: boolean }) {
+export default function BookCover({
+  book,
+  mini = false,
+}: {
+  book: Book;
+  mini?: boolean;
+}) {
   if (mini)
     return (
       <div

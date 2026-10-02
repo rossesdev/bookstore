@@ -1,10 +1,14 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import { bookById } from "../books";
+import { loadOrders } from "../actions";
 import { keys, maxQuantity } from "../constants/store";
+import type { BookById } from "../lib/books";
 import { readStorage, writeStorage } from "../lib/storage";
 import type { CartItem, Order, Customer } from "../types/store";
 
-export function useStoredStore(syncView: () => void): {
+export function useStoredStore(
+  syncView: () => void,
+  bookById: BookById,
+): {
   ready: boolean;
   customer: Customer | null;
   setCustomer: Dispatch<SetStateAction<Customer | null>>;
@@ -12,11 +16,16 @@ export function useStoredStore(syncView: () => void): {
   setCart: Dispatch<SetStateAction<CartItem[]>>;
   orders: Order[];
   setOrders: Dispatch<SetStateAction<Order[]>>;
+  ordersLoading: boolean;
+  ordersError: boolean;
 } {
   const [ready, setReady] = useState(false);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoadedCustomerId, setOrdersLoadedCustomerId] = useState<number | null>(null);
+  const [ordersError, setOrdersError] = useState(false);
+  const ordersLoading = !!customer && ordersLoadedCustomerId !== customer.customer_id;
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -40,7 +49,31 @@ export function useStoredStore(syncView: () => void): {
       setReady(true);
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [syncView]);
+  }, [syncView, bookById]);
+
+  useEffect(() => {
+    const customerId = customer?.customer_id;
+    if (!customerId) return;
+
+    let active = true;
+    loadOrders(customerId)
+      .then((loaded) => {
+        if (active) {
+          setOrders(loaded);
+          setOrdersError(false);
+          setOrdersLoadedCustomerId(customerId);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setOrdersError(true);
+          setOrdersLoadedCustomerId(customerId);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [customer?.customer_id]);
 
   useEffect(() => {
     if (ready) writeStorage(keys.user, customer);
@@ -57,5 +90,7 @@ export function useStoredStore(syncView: () => void): {
     setCart,
     orders,
     setOrders,
+    ordersLoading,
+    ordersError,
   };
 }

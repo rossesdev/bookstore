@@ -1,4 +1,4 @@
-import type { User, View } from "../types/store";
+import type { Customer, View } from "../types/store";
 import Icon from "./Icon";
 import NavLink from "./NavLink";
 
@@ -12,7 +12,7 @@ export default function StoreHeader({
 }: {
   view: View;
   navigate: (view: View) => void;
-  user: User | null;
+  user: Customer | null;
   ordersCount: number;
   cartCount: number;
   onOpenCart: () => void;

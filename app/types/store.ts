@@ -22,13 +22,16 @@ export type OrderStatus = "pending" | "paid" | "cancelled";
 
 export type CreateOrderInput = {
   customer_id: number;
-  total: number;
-  items: OrderItem[];
+  items: CartItem[];
 };
 
-export type Order = CreateOrderInput & {
+export type Order = {
   order_id: number;
+  customer_id: number;
+  total: number;
+  items: OrderItem[];
   status: OrderStatus;
+  order_version: number;
   created_at: string;
   updated_at: string;
 };
@@ -38,4 +41,12 @@ export type View = "shop" | "checkout" | "orders";
 export type Notice = {
   message: string;
   error: boolean;
+};
+
+export type Book = {
+  id: number;
+  title: string;
+  author: string;
+  price: number;
+  description: string;
 };

@@ -10,7 +10,8 @@ type CancellationFormProps = {
   setReasonError: Dispatch<SetStateAction<boolean>>;
   reasonRef: RefObject<HTMLTextAreaElement | null>;
   closeCancel: () => void;
-  confirmCancel: () => void;
+  confirmCancel: () => Promise<void>;
+  cancelling: boolean;
 };
 
 export default function CancelOrderDialog({
@@ -27,6 +28,7 @@ export default function CancelOrderDialog({
     reasonRef,
     closeCancel,
     confirmCancel,
+    cancelling,
   } = form;
   const open = !!cancelId;
   return (
@@ -96,9 +98,10 @@ export default function CancelOrderDialog({
           </button>
           <button
             onClick={confirmCancel}
+            disabled={cancelling}
             className="py-2.5 px-4 rounded-lg bg-primary hover:bg-primary-hover text-on-primary font-bold text-sm"
           >
-            Confirmar cancelación
+            {cancelling ? "Cancelando…" : "Confirmar cancelación"}
           </button>
         </div>
       </div>

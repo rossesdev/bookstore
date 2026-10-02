@@ -1,10 +1,12 @@
-import { books, type Book } from "../books";
+import type { Book } from "../types/store";
 import BookCard from "./BookCard";
 import Icon from "./Icon";
 
 export default function CatalogView({
+  books,
   addToCart,
 }: {
+  books: Array<Book>;
   addToCart: (book: Book) => void;
 }) {
   return (
@@ -20,8 +22,8 @@ export default function CatalogView({
           </h1>
           <p className="text-muted text-base sm:text-lg leading-relaxed">
             Explora nuestra colección selecta de 10 obras imprescindibles.
-            Portadas exclusivas, narrativas inolvidables y entrega
-            inmediata para tu biblioteca.
+            Portadas exclusivas, narrativas inolvidables y entrega inmediata
+            para tu biblioteca.
           </p>
         </div>
         <div className="absolute right-10 top-10 opacity-10 pointer-events-none">

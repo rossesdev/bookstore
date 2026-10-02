@@ -1,0 +1,14 @@
+{
+  "name": "event-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "plugin.name": "pgoutput",
+    "database.hostname": "pgdatabase",
+    "database.port": "5432",
+    "database.user": "bookstore_admin",
+    "database.password": "/run/secrets/postgres_password",
+    "database.dbname": "bookstore",
+    "database.server.name": "postgres",
+    "table.include.list": "public.outbox"
+  }
+}

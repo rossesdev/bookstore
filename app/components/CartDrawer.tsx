@@ -1,17 +1,35 @@
-import { bookById, money } from "../books";
 import { maxQuantity } from "../constants/store";
+import { money, type BookById } from "../lib/books";
 import type { CartItem } from "../types/store";
 import BookCover from "./BookCover";
 import Icon from "./Icon";
 import Modal from "./Modal";
 
-export default function CartDrawer({ open, cart, cartCount, cartTotal, onClose, onClearRequest, onCheckout, removeFromCart, updateQuantity }: { open: boolean; cart: CartItem[]; cartCount: number; cartTotal: number; onClose: () => void; onClearRequest: () => void; onCheckout: () => void; removeFromCart: (id: number) => void; updateQuantity: (id: number, value: number) => void }) {
+export default function CartDrawer({
+  open,
+  cart,
+  bookById,
+  cartCount,
+  cartTotal,
+  onClose,
+  onClearRequest,
+  onCheckout,
+  removeFromCart,
+  updateQuantity,
+}: {
+  open: boolean;
+  cart: CartItem[];
+  bookById: BookById;
+  cartCount: number;
+  cartTotal: number;
+  onClose: () => void;
+  onClearRequest: () => void;
+  onCheckout: () => void;
+  removeFromCart: (id: number) => void;
+  updateQuantity: (id: number, value: number) => void;
+}) {
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      className="drawer-dialog"
-    >
+    <Modal open={open} onClose={onClose} className="drawer-dialog">
       <div className="flex flex-col h-full">
         <div className="p-5 sm:p-6 border-b border-outline flex items-center justify-between bg-surface-lowest/70">
           <div className="flex items-center gap-3">

@@ -1,4 +1,5 @@
-import { money, type Book } from "../books";
+import { money } from "../lib/books";
+import type { Book } from "../types/store";
 import BookCover from "./BookCover";
 import Icon from "./Icon";
 
@@ -20,9 +21,7 @@ export default function BookCard({
           >
             {book.title}
           </h3>
-          <p className="text-xs text-muted font-medium mt-0.5">
-            {book.author}
-          </p>
+          <p className="text-xs text-muted font-medium mt-0.5">{book.author}</p>
           <p className="text-xs text-muted mt-2 line-clamp-2 leading-relaxed">
             {book.description}
           </p>

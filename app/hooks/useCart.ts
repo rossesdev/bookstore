@@ -1,10 +1,11 @@
 import type { Dispatch, SetStateAction } from "react";
-import { bookById, type Book } from "../books";
 import { maxQuantity } from "../constants/store";
-import type { CartItem } from "../types/store";
+import type { BookById } from "../lib/books";
+import type { Book, CartItem } from "../types/store";
 
 export function useCart(
   cart: CartItem[],
+  bookById: BookById,
   setCart: Dispatch<SetStateAction<CartItem[]>>,
   toast: (message: string, error?: boolean) => void,
 ) {
@@ -18,7 +19,10 @@ export function useCart(
   function addToCart(book: Book) {
     const existing = cart.find((item) => item.bookId === book.id);
     if (existing?.quantity === maxQuantity) {
-      toast(`Tope máximo alcanzado para “${book.title}” (${maxQuantity} unidades).`, true);
+      toast(
+        `Tope máximo alcanzado para “${book.title}” (${maxQuantity} unidades).`,
+        true,
+      );
       return;
     }
     setCart((items) =>

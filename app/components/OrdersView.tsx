@@ -1,5 +1,5 @@
-import { bookById, money } from "../books";
 import { dateLabel } from "../lib/dateLabel";
+import { money, type BookById } from "../lib/books";
 import type { Order, View } from "../types/store";
 import BookCover from "./BookCover";
 import Icon from "./Icon";
@@ -7,14 +7,24 @@ import NavLink from "./NavLink";
 
 export default function OrdersView({
   orders,
+  loading,
+  error,
+  bookById,
   view,
   navigate,
   onCancelOrder,
+  onPayOrder,
+  payingOrderId,
 }: {
   orders: Order[];
+  loading: boolean;
+  error: boolean;
+  bookById: BookById;
   view: View;
   navigate: (view: View) => void;
   onCancelOrder: (id: number) => void;
+  onPayOrder: (id: number) => void;
+  payingOrderId: number | null;
 }) {
   return (
     <section className="space-y-8 max-w-5xl mx-auto">
@@ -37,7 +47,11 @@ export default function OrdersView({
           Comprar más títulos
         </NavLink>
       </div>
-      {orders.length === 0 ? (
+      {loading || error ? (
+        <p className="text-center text-muted" role="status">
+          {loading ? "Cargando pedidos…" : "No se pudieron cargar tus pedidos."}
+        </p>
+      ) : orders.length === 0 ? (
         <div className="bg-surface rounded-lg p-10 sm:p-14 border border-outline text-center space-y-4">
           <div className="w-20 h-20 rounded-full bg-surface-raised text-muted mx-auto flex items-center justify-center">
             <Icon name="book" className="w-10 h-10" />
@@ -71,6 +85,9 @@ export default function OrdersView({
                     <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-surface-raised text-content">
                       Pedido #{order.order_id}
                     </span>
+                    <span className="text-xs font-semibold text-muted">
+                      {order.status === "paid" ? "Pagado" : "Pendiente de pago"}
+                    </span>
                     <time
                       className="text-xs text-muted font-medium"
                       dateTime={order.created_at}
@@ -89,15 +106,24 @@ export default function OrdersView({
                     </strong>
                   </p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-4">
                   <div className="text-right">
                     <span className="text-[11px] uppercase font-bold text-muted block">
-                      Total pagado
+                      {order.status === "paid" ? "Total pagado" : "Total pendiente"}
                     </span>
                     <span className="font-display font-extrabold text-primary text-xl tabular-nums">
                       {money.format(order.total)}
                     </span>
                   </div>
+                  {order.status === "pending" && (
+                    <button
+                      onClick={() => onPayOrder(order.order_id)}
+                      disabled={payingOrderId !== null}
+                      className="px-3.5 py-2 rounded-lg bg-primary hover:bg-primary-hover text-on-primary font-semibold text-xs"
+                    >
+                      {payingOrderId === order.order_id ? "Procesando…" : "Pagar"}
+                    </button>
+                  )}
                   <button
                     onClick={() => onCancelOrder(order.order_id)}
                     className="px-3.5 py-2 rounded-lg text-content bg-transparent border border-outline hover:bg-surface-raised font-semibold text-xs flex items-center gap-1.5"

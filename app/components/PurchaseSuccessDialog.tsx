@@ -15,14 +15,13 @@ export default function PurchaseSuccessDialog({
           <Icon name="check" className="w-9 h-9" />
         </div>
         <span className="inline-block text-xs uppercase tracking-widest text-success font-bold bg-success/10 px-3 py-1 rounded-full border border-success/30">
-          ¡Transacción Exitosa!
+          ¡Pago confirmado!
         </span>
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-content">
           ¡Felicidades, compraste tus libros!
         </h2>
         <p className="text-sm text-muted leading-relaxed">
-          Tu pedido ha sido registrado correctamente y se encuentra disponible
-          en tu sección personal de <strong>Mis libros</strong>.
+          Tu pedido ahora aparece como pagado en <strong>Mis libros</strong>.
         </p>
         <button
           onClick={onContinue}
